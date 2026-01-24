@@ -4,10 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: function () {
-        // Require username only if not a Google user
-        return !this.googleId;
-      },
+      required: true,
     },
     name: {
       type: String,
@@ -20,10 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: function () {
-        // Require password only if not a Google user
-        return !this.googleId;
-      },
+      required: true,
     },
     profileImage: {
       type: String,

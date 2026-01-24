@@ -3,13 +3,9 @@ import dotenv from "dotenv";
 import { EventEmitter } from "events";
 dotenv.config();
 
-/**
- * Connects to the MongoDB database.
- * @returns {Promise<void>} A promise that resolves when the connection is successful or rejects with an error.
- */
 const connectDB = async (io) => {
   try {
-    mongoose.set('bufferCommands', false); // Disable Mongoose buffering
+    mongoose.set("bufferCommands", false); // Disable Mongoose buffering
 
     // Establish MongoDB connection
     await mongoose.connect(
@@ -21,7 +17,7 @@ const connectDB = async (io) => {
         connectTimeoutMS: 30000, // Increase timeout
       }
     );
-    
+
     console.log("MongoDB connected successfully!");
     EventEmitter.setMaxListeners(100000);
 

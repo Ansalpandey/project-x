@@ -98,7 +98,6 @@ const getComments = async (req, res) => {
   }
 };
 
-
 const updateComment = async (req, res) => {
   const { content } = req.body;
   const { id, commentId } = req.params;

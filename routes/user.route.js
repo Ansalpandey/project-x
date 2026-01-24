@@ -23,7 +23,7 @@ import {
   verifyOTP,
   removeFollower,
   getDeviceToken,
-  sendDeviceToken
+  sendDeviceToken,
 } from "../controller/user.controller.js";
 import { auth } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";

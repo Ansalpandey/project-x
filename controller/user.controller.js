@@ -7,13 +7,7 @@ import {
   uploadOnCloudinary,
   uploadBase64Image,
 } from "../utils/cloudinary.util.js";
-/**
- * Retrieves all users from the database.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The response object with the retrieved users.
- */
+
 const getUsers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
@@ -139,14 +133,6 @@ const getUsersBookmarkedCourses = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-/**
- * Retrieves the profile of the authenticated user.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The response object with the user's profile.
- */
 
 const getMyProfile = async (req, res) => {
   let user;
@@ -313,14 +299,7 @@ const getOtherUserProfile = async (req, res) => {
     });
   }
 };
-/**
- * Creates a new user.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The response object with the created user data.
- * @throws {Error} If there is an error during the user creation process.
- */
+
 const createUser = async (req, res) => {
   const { name, email, password, age, username, bio, profileImageBase64 } =
     req.body;
@@ -395,14 +374,6 @@ const createUser = async (req, res) => {
   }
 };
 
-/**
- * Logs in a user by checking the provided credentials and generating a JWT token.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The response object with the logged-in user details and JWT token.
- * @throws {Error} If there is a server error.
- */
 const loginUser = async (req, res) => {
   const { email, username, password } = req.body;
 
@@ -444,7 +415,6 @@ const loginUser = async (req, res) => {
         username: user.username,
         profileImage: user.profileImage,
         bio: user.bio,
-        enrolledCourses: user.enrolledCourses,
       },
     });
   } catch (error) {
@@ -536,13 +506,6 @@ const forgetPassword = async (req, res) => {
   }
 };
 
-/**
- * Deletes a user by ID.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The response object with a success message and the deleted user.
- */
 const deleteUser = (req, res) => {
   User.findByIdAndDelete(req.params.id).then((result) => {
     return res.status(200).json({
@@ -552,13 +515,6 @@ const deleteUser = (req, res) => {
   });
 };
 
-/**
- * Retrieves courses for a specific user.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The response object with the retrieved courses.
- */
 const getUserCourses = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
@@ -598,13 +554,6 @@ const getUserCourses = async (req, res) => {
   }
 };
 
-/**
- * Logs out the user by clearing the token cookie.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Object} The response object with a success message.
- */
 const logoutUser = (req, res) => {
   res.clearCookie("token");
   return res.status(200).json({

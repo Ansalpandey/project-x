@@ -9,10 +9,10 @@ dotenv.config();
 import { startConsumer } from "./kafka/kafka.consumer.js";
 import { startProducer } from "./kafka/kafka.producer.js";
 // WebSocket Server
-const wsServer = http.createServer();  // Separate server for WebSocket
+const wsServer = http.createServer(); // Separate server for WebSocket
 export const io = new Server(wsServer);
 const app = express();
-const httpServer = http.createServer(app);  // HTTP server for the Express app
+const httpServer = http.createServer(app); // HTTP server for the Express app
 
 app.use(cors());
 
@@ -50,24 +50,22 @@ httpServer.listen(process.env.HTTP_PORT, async () => {
   }
 });
 
-
-
-export const connectedUsers = {};  // Track connected users by their userId
+export const connectedUsers = {}; // Track connected users by their userId
 
 io.on("connection", (socket) => {
   console.log("A user connected via WebSocket");
 
   // Listen for user identification (when they connect or log in)
   socket.on("identify", (userId) => {
-    connectedUsers[userId] = socket.id;  // Map the userId to this WebSocket connection ID
+    connectedUsers[userId] = socket.id; // Map the userId to this WebSocket connection ID
     console.log(`User ${userId} connected with socket ID: ${socket.id}`);
   });
 
   // Listen for incoming notifications to send to specific users
   socket.on("send_notification", (notification) => {
-    const { userId, message } = notification;  // Notification includes the target userId and the message
+    const { userId, message } = notification; // Notification includes the target userId and the message
 
-    const socketId = connectedUsers[userId];  // Get the socket ID of the target user
+    const socketId = connectedUsers[userId]; // Get the socket ID of the target user
     if (socketId) {
       // Emit the notification only to the specific user
       io.to(socketId).emit("new_notification", message);
@@ -83,13 +81,12 @@ io.on("connection", (socket) => {
     for (const userId in connectedUsers) {
       if (connectedUsers[userId] === socket.id) {
         console.log(`User ${userId} disconnected from WebSocket`);
-        delete connectedUsers[userId];  // Remove the user from the map
+        delete connectedUsers[userId]; // Remove the user from the map
         break;
       }
     }
   });
 });
-
 
 // Start the WebSocket server on a different port
 wsServer.listen(process.env.WS_PORT, () => {

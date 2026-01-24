@@ -43,10 +43,7 @@ export const uploadOnCloudinary = async (localFilePath) => {
 
 export const uploadBase64Image = async (base64String) => {
   try {
-    const cleanBase64 = base64String.replace(
-      /^data:image\/\w+;base64,/,
-      ""
-    );
+    const cleanBase64 = base64String.replace(/^data:image\/\w+;base64,/, "");
 
     const response = await cloudinary.uploader.upload(
       `data:image/jpeg;base64,${cleanBase64}`,
@@ -89,10 +86,7 @@ export const uploadVideoOnCloudinary = async (filePath) => {
 
 export const uploadVideoOnCloudinaryBase64 = async (base64String) => {
   try {
-    const cleanBase64 = base64String.replace(
-      /^data:video\/\w+;base64,/,
-      ""
-    );
+    const cleanBase64 = base64String.replace(/^data:video\/\w+;base64,/, "");
 
     const response = await cloudinary.uploader.upload(
       `data:video/mp4;base64,${cleanBase64}`,

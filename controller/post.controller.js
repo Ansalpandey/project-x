@@ -338,7 +338,7 @@ const likePost = async (req, res) => {
       const postOwnerDeviceToken = postOwner.deviceToken;
       await sendLikeNotification(postOwnerDeviceToken, postId, likedByUser);
     } else {
-      return
+      return;
     }
 
     await sendLikeNotification(postOwnerDeviceToken, postId, likedByUser);

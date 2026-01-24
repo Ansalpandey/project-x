@@ -12,7 +12,7 @@ import {
   getPostLikes,
   bookmarkedPost,
   getPostsByUserId,
-  deleteAllPostsOfUser
+  deleteAllPostsOfUser,
 } from "../controller/post.controller.js";
 
 import { auth } from "../middleware/auth.middleware.js";
