@@ -1,96 +1,114 @@
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import dotenv from "dotenv";
 
-// Configuration
-cloudinary.v2.config({
+dotenv.config();
+
+// Cloudinary config
+cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET, // Click 'View Credentials' below to copy your API secret
+  api_secret: process.env.CLOUD_API_SECRET,
   secure: true,
 });
+
+// helper
+const safeUnlink = (path) => {
+  if (path && fs.existsSync(path)) {
+    fs.unlinkSync(path);
+  }
+};
 
 export const uploadOnCloudinary = async (localFilePath) => {
   try {
     if (!localFilePath) return null;
 
-    // Upload file on Cloudinary and remove the locally stored file
-    const response = await cloudinary.v2.uploader.upload(localFilePath, {
+    const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
+      folder: "slidee/users",
     });
 
-    console.log("File upload successful", response.url);
-    fs.unlinkSync(localFilePath); // Remove the locally stored file as the upload to the cloud got successful.
-    return response;
+    safeUnlink(localFilePath);
+
+    return {
+      url: response.secure_url,
+      public_id: response.public_id,
+    };
   } catch (error) {
-    fs.unlinkSync(localFilePath); // Remove the locally stored file as the upload to the cloud got failed.
+    console.error("Cloudinary upload error:", error);
+    safeUnlink(localFilePath);
     return null;
   }
 };
 
 export const uploadBase64Image = async (base64String) => {
   try {
-    // Remove any metadata before uploading
-    const cleanBase64 = base64String.replace(/^data:image\/\w+;base64,/, "");
-    
-    const response = await cloudinary.v2.uploader.upload(
+    const cleanBase64 = base64String.replace(
+      /^data:image\/\w+;base64,/,
+      ""
+    );
+
+    const response = await cloudinary.uploader.upload(
       `data:image/jpeg;base64,${cleanBase64}`,
       {
         resource_type: "image",
+        folder: "slidee/users",
       }
     );
-    return response;
+
+    return {
+      url: response.secure_url,
+      public_id: response.public_id,
+    };
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
+    console.error("Cloudinary base64 upload error:", error);
     return null;
   }
 };
 
+export const uploadVideoOnCloudinary = async (filePath) => {
+  try {
+    const response = await cloudinary.uploader.upload(filePath, {
+      resource_type: "video",
+      chunk_size: 100000000,
+      folder: "slidee/videos",
+    });
 
-export const uploadVideoOnCloudinary = (filePath) => {
-  return new Promise((resolve, reject) => {
-    cloudinary.v2.uploader.upload(
-      filePath,
-      {
-        resource_type: "video",
-        chunk_size: 100000000,
-      },
-      (error, result) => {
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          reject(error);
-          fs.unlinkSync(filePath);
-        } else {
-          resolve({
-            url: result.secure_url,
-          }); // Ensure you're returning the correct URL property
-          fs.unlinkSync(filePath);
-        }
-      }
-    );
-  });
+    safeUnlink(filePath);
+
+    return {
+      url: response.secure_url,
+      public_id: response.public_id,
+    };
+  } catch (error) {
+    console.error("Cloudinary video upload error:", error);
+    safeUnlink(filePath);
+    return null;
+  }
 };
 
-export const uploadVideoOnCloudinaryBase64 = (base64String) => {
-  return new Promise((resolve, reject) => {
-    // Remove any metadata before uploading
-    const cleanBase64 = base64String.replace(/^data:video\/\w+;base64,/, "");
-    
-    cloudinary.v2.uploader.upload(
+export const uploadVideoOnCloudinaryBase64 = async (base64String) => {
+  try {
+    const cleanBase64 = base64String.replace(
+      /^data:video\/\w+;base64,/,
+      ""
+    );
+
+    const response = await cloudinary.uploader.upload(
       `data:video/mp4;base64,${cleanBase64}`,
       {
         resource_type: "video",
         chunk_size: 100000000,
-      },
-      (error, result) => {
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          reject(error);
-        } else {
-          resolve({
-            url: result.secure_url,
-          }); 
-        }
+        folder: "slidee/videos",
       }
     );
-  });
+
+    return {
+      url: response.secure_url,
+      public_id: response.public_id,
+    };
+  } catch (error) {
+    console.error("Cloudinary base64 video upload error:", error);
+    return null;
+  }
 };

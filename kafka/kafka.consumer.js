@@ -7,13 +7,13 @@ import { Kafka } from "kafkajs";
 
 const kafka = new Kafka({
   clientId: "slidee-app",
-  brokers: ["192.168.1.8:9092"],
+  brokers: ["192.168.1.3:9092"],
 });
 
 const consumer = kafka.consumer({
   groupId: "slidee-group",
 });
-const url = process.env.MONGO_URL_LOCAL;
+const url = process.env.MONGO_URL;
 
 let postBatch = [];
 let userPostIdsBatch = [];

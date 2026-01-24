@@ -25,17 +25,6 @@ const userSchema = new mongoose.Schema(
         return !this.googleId;
       },
     },
-    googleId: {
-      type: String,
-      unique: true, // Ensure unique for Google users
-      sparse: true, // Only applicable for Google users
-    },
-    enrolledCourses: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Course",
-      },
-    ],
     profileImage: {
       type: String,
     },
@@ -69,18 +58,6 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Types.ObjectId,
         ref: "Post",
-      },
-    ],
-    courses: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Course",
-      },
-    ],
-    bookmarkedCourses: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Course",
       },
     ],
     bookmarkedPosts: [

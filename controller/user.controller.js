@@ -1,7 +1,5 @@
 import { User } from "../models/user.model.js";
-import { Course } from "../models/course.model.js";
 import { Post } from "../models/post.model.js";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
@@ -40,7 +38,6 @@ const getUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 const searchUsers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -325,43 +322,47 @@ const getOtherUserProfile = async (req, res) => {
  * @throws {Error} If there is an error during the user creation process.
  */
 const createUser = async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    age,
-    username,
-    bio,
-    profileImageBase64,
-    location,
-  } = req.body;
+  const { name, email, password, age, username, bio, profileImageBase64 } =
+    req.body;
+
+  console.log("BODY:", req.body);
+  console.log("FILES:", req.files);
 
   try {
-    // Validate input
     if (!name || !email || !password || !age || !username || !bio) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if the user already exists
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Initialize profileImage and coverImage with default values
-    let profileImage = { url: "" };
+    let profileImageUrl = "";
 
-    // Upload the profile picture if it is provided
-    if (profileImageBase64) {
-      profileImage = await uploadBase64Image(profileImageBase64);
+    // PRIORITY 1: multipart file (Postman)
+    if (req.files?.profileImage?.[0]) {
+      const uploaded = await uploadOnCloudinary(req.files.profileImage[0].path);
+
+      console.log("CLOUDINARY RESPONSE:", uploaded);
+
+      if (uploaded?.url) {
+        profileImageUrl = uploaded.url;
+      }
+    }
+    // PRIORITY 2: base64 (Android)
+    else if (profileImageBase64) {
+      const uploaded = await uploadBase64Image(profileImageBase64);
+
+      console.log("CLOUDINARY BASE64 RESPONSE:", uploaded);
+
+      if (uploaded?.url) {
+        profileImageUrl = uploaded.url;
+      }
     }
 
-    // Upload the profile picture if it is provided
-    if (req.files && req.files.profileImage && req.files.profileImage[0]) {
-      profileImage = await uploadOnCloudinary(req.files.profileImage[0].path);
-    }
+    console.log("FINAL PROFILE IMAGE URL:", profileImageUrl);
 
-    // Create a new user instance
     user = new User({
       name,
       email,
@@ -370,10 +371,11 @@ const createUser = async (req, res) => {
       bio,
       password,
       location: "",
-      profileImage: profileImage.url,
+      profileImage: profileImageUrl,
     });
-    // Save the user to the database
+
     const result = await user.save();
+
     return res.status(201).json({
       message: "User created successfully!",
       user: {
@@ -388,7 +390,7 @@ const createUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     res.status(500).send("Server error");
   }
 };
@@ -913,5 +915,5 @@ export {
   verifyOTP,
   removeFollower,
   sendDeviceToken,
-  getDeviceToken
+  getDeviceToken,
 };

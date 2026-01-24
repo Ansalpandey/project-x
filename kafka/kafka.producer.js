@@ -4,14 +4,14 @@ import { Kafka } from "kafkajs";
 
 const kafka = new Kafka({
   clientId: "slidee-app",
-  brokers: ["192.168.1.8:9092"],
+  brokers: ["192.168.1.3:9092"],
 });
 
 const producer = kafka.producer();
 const admin = kafka.admin(
   {
     clientId: "slidee-app",
-    brokers: ["192.168.1.8:9092"],
+    brokers: ["192.168.1.3:9092"],
   }
 );
 
