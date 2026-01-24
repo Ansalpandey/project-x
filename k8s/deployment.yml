@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: social-api-deployment
+  namespace: social-api
+  labels:
+    app: social-api
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: social-api
+  template:
+    metadata:
+      labels:
+        app: social-api
+    spec:
+      containers:
+        - name: social-api
+          image: ghcr.io/ansalpandey/social-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          # Optional: health checks
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15

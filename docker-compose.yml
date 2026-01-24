@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  kafka:
+    image: apache/kafka:4.1.1
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # KRaft mode settings
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /kafka-logs
+      KAFKA_NUM_PARTITIONS: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka-data:/kafka-logs
+    networks:
+      - social-network
+
+  social-api:
+    image: social-api:latest
+    container_name: social-api
+    depends_on:
+      - kafka
+    ports:
+      - "8000:8000"
+    networks:
+      - social-network
+
+networks:
+  social-network:
+    driver: bridge
+
+volumes:
+  kafka-data:

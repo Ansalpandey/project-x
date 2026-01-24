@@ -29,7 +29,7 @@ export const options = {
 
 export default function () {
   http.post(
-    "http://localhost:3000/api/v1/posts/create",
+    "http://localhost:8000/api/v1/posts/create",
     JSON.stringify({
       content: "This is a test post",
       videoUrl: "",
@@ -39,7 +39,7 @@ export default function () {
       headers: {
         "Content-Type": "application/json",
         Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjcyNzg2NzZjZWM2YjQ0ZDJjYzI1YWFlIiwiZW1haWwiOiJzaGl2YW1wYW5kZXlAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzaGl2YW0ifSwiaWF0IjoxNzMwNjQzNjQ0LCJleHAiOjE3MzE5Mzk2NDR9.7sXEO7BeQYc9nAlnlPcafOeHZ-b8kw3aWUkEtCUxrXk",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjk3NDZhYTI0NTU4MTZiODAwZTU2ZWM0IiwiZW1haWwiOiJzaGl2YW1wYW5kZXlAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzaGl2YW0ifSwiaWF0IjoxNzY5MjM4MDc1LCJleHAiOjE3NzA1MzQwNzV9.1P8sKpj6nT5gwz39bNGRQiPS_uaPltxMPDSwq9aBit4",
       },
     }
   );

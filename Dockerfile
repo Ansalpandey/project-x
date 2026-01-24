@@ -1,17 +1,25 @@
-FROM ubuntu
+# ----------- Builder stage -----------
+FROM node:20-alpine AS builder
 
-RUN apt-get update && apt-get install -y apt-transport-https
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
-RUN apt-get upgrade -y
-RUN apt-get install -y nodejs
+WORKDIR /app
 
-# Copy all files from the current directory
+# Copy dependency files first for better caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy all app files
 COPY . .
 
-# (Optional) Set working directory (adjust path as needed)
-# WORKDIR /app
+# ----------- Runtime stage -----------
+FROM node:20-alpine
 
-RUN npm install
+WORKDIR /app
 
-ENTRYPOINT [ "node", "index.js" ]
+ENV NODE_ENV=production
+
+# Copy everything needed from builder
+COPY --from=builder /app ./
+
+ENTRYPOINT ["node", "index.js"]

@@ -1,19 +1,17 @@
 import dotenv from "dotenv";
 dotenv.config();
-import { Kafka } from "kafkajs";
+import { Kafka, logLevel } from "kafkajs";
+// const brokers = Array.from({ length: 10 }, (_, i) => `kafka-${i}.kafka.social-api.svc.cluster.local:9092`);
+
 
 const kafka = new Kafka({
   clientId: "slidee-app",
   brokers: ["192.168.1.3:9092"],
+  logLevel: logLevel.INFO,
 });
 
 const producer = kafka.producer();
-const admin = kafka.admin(
-  {
-    clientId: "slidee-app",
-    brokers: ["192.168.1.3:9092"],
-  }
-);
+const admin = kafka.admin();
 
 export const createTopicIfNotExists = async (topic) => {
   try {

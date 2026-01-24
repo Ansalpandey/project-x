@@ -36,6 +36,10 @@ app.use("/api/v1/posts/", postRouter);
 app.use("/api/v1/posts/", commentRouter);
 app.use("/api/v1/notifications/", notificationRouter);
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", message: "Server is running" });
+});
+
 // Start the HTTP server and Kafka consumer
 httpServer.listen(process.env.HTTP_PORT, async () => {
   console.log(`HTTP Server running on port ${process.env.HTTP_PORT}`);
